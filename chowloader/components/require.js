@@ -7,11 +7,10 @@ function newRequire(filename){
 }
 
 function resolve(path){
-  if(path === "chowloader") path = "./chowloader/chowloader.js";
-
-  if(path.startsWith("./")) path = __dirname + path.substring(1);
+  if(path.startsWith("./")) path = __dirname + path.substring(2);
   if(path.startsWith("/")) path = "." + path;
 
+  if(path === "chowloader") path = "./chowloader/chowloader.js";
   if(path.startsWith("$lib")) path = path.replace("$lib", "./chowloader/lib");
   if(path.startsWith("$components")) path = path.replace("$components", "./chowloader/components");
 
@@ -27,9 +26,9 @@ function require(path){
     const module = resolve(path);
     if(cache[module]) return cache[module];
     const req = newRequire(module);
-    return cache[module] = Function("require, __dirname, __filename", chowjs.loadFile(module))(req, __dirname, __filename);
+    return cache[module] = Function("require, __dirname, __filename", chowjs.loadFile(module))(req, req.dirname, req.filename);
   } catch(e){
-    chowjs.writeFile("save/require_error.txt", `${e.name} [${require.filename}:${path}]: ${e.message}\n${e.stack}`);
+    chowjs.writeFile("save/require_error.txt", `${e.name} [${__filename}:${path}]: ${e.message}\n${e.stack}`);
   }
 }
 
