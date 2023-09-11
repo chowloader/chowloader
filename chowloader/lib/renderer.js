@@ -111,7 +111,7 @@ return class ChowLoaderRenderer {
     chowjs.renderQuad(x, y, x + w, y + h, r, g, b, a);
   }
 
-  static renderText(text, x, y, fontSize, font, color, stroke, strokeWidth){
+  static renderText(text, x, y, fontSize, font, color, strokeWidth, strokeColor){
     const width = chowjs.measureTextWidth(text, `${fontSize}px ${font}`);
     chowjs.renderText(text, width/2 + x, fontSize/2 + y, width, "center", `${fontSize}px ${font}`, color, strokeWidth, strokeColor);
   }
