@@ -40,9 +40,9 @@ chowloader.on("omori_loaded", () => {
   function hookFunc(func, event){
     const _func = globalThis[func];
     globalThis[func] = function(...args){
-      const ret = _func(...args);
+      const ret = _func(...args); //comment out to stop omori from starting
       chowloader.emit(event);
-      return ret;
+      return ret; //comment out to stop omori from starting
     }
   }
 
@@ -99,7 +99,23 @@ chowloader.on("aot_loaded", () => {
 
   chowloader.aot.jsvals = chowloader.aot.jsvals.filter(c => c.corrupted);
 
-  chowloader.splash.setMessage("Loading OMORI...")
+  chowloader.splash.setMessage("Loading Mods...");
+  chowloader.splash.setSubMessage("");
+  chowloader.splash.setProgress(100);
+  chowloader.splash.render();
+
+  try {
+    let mods = chowjs.readDir(__dirname + "/mods").filter(f => f.endsWith(".js"));
+    for(let mod of mods){
+      require("/chowloader/mods/" + mod);
+    }
+  } catch(e) {
+    chowloader.splash.setMessage("An error occured");
+    chowloader.splash.setSubMessage(e.type + ": " + e.message);
+    chowloader.splash.render();
+    while(true){}; // To stop everything
+  }
+  chowloader.splash.setMessage("Loading OMORI...");
   chowloader.splash.setSubMessage("");
   chowloader.splash.setProgress(100);
   chowloader.splash.render();
