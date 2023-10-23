@@ -7,6 +7,8 @@ class ChowLoader extends Event {
   natives = natives;
   renderer = natives.renderer;
   aot = natives.aot;
+  thread = natives.thread;
+  assets = natives.assets;
   splash = new ChowLoaderSplash();
   logs = [];
 
@@ -19,6 +21,14 @@ class ChowLoader extends Event {
 }
 
 globalThis.chowloader = new ChowLoader();
+
+chowloader.assets.isImageLoaded = function(path){
+  return chowjs.imageReady(path);
+}
+
+chowloader.assets.isAudioLoaded = function(path){
+  return chowjs.createAudio(path) !== null;
+}
 
 chowloader.splash.setMessage("Initialization...");
 chowloader.splash.render();
