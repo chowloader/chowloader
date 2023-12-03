@@ -259,7 +259,7 @@ class VirtualKeyboard extends ChowLoaderRenderer {
   constructor(){
     super(640, 480, "rgba(0,0,0,0)");
     this.renderRect(20, 268, 600, 190, "rgba(0,0,0,0.9)");
-    this.show = true;
+    this.show = false;
   }
 
   moveLeft(){
@@ -344,7 +344,7 @@ class Console extends ChowLoaderRenderer {
 
   constructor(){
     super(640, 480, "rgba(0,0,0,0)");
-    this.show = true;
+    this.show = false;
     vkbd.onPress = this.onAction.bind(this);
   }
 

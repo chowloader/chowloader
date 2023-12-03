@@ -10,7 +10,7 @@ class ChowLoader extends Event {
   thread = natives.thread;
   assets = natives.assets;
   splash = new ChowLoaderSplash();
-  freezeGame = true;
+  freezeGame = false;
 
   constructor(){
     super();
