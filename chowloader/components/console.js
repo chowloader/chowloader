@@ -504,8 +504,9 @@ class Console extends ChowLoaderRenderer {
   }
 
   enterCommand(text){
+    if(!text.split(" ")[0]) return;
     const command = this.commands.find(c => c.name === text.split(" ")[0]);
-    if(!command) return chowloader.logger.error(`Command(${command.name}): This command doesn't exist.`);
+    if(!command) return chowloader.logger.error(`Command(${text.split(" ")[0]}): This command doesn't exist.`);
     const strings = text.split(" ").slice(1).join(" ").split('"');
     const args = [];
 
