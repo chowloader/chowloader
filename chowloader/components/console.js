@@ -467,6 +467,7 @@ class Console extends ChowLoaderRenderer {
     if(command instanceof CommandBuilder && this.commands.indexOf(command) === -1) this.commands.push(command);
   }
 
+  previousCommand = "";
   command = [];
   commandPos = 0;
   _cursorPos = 0;
@@ -548,20 +549,23 @@ class Console extends ChowLoaderRenderer {
         break;
       case "tab":
         let tCommand = this.command.join('');
-        if(tCommand.split(" ").length === 1 && tCommand){
+        if(tCommand && tCommand.split(" ").length === 1){
           const _command = this.commands.find(c => c.name.startsWith(tCommand));
           if(_command){
             let str = _command.name.substring(tCommand.length);
-            this.command.push(...str.split(''), " ");
+            this.command.push(...str, " ");
             this.cursorPos += str.length + 1;
           }
+        } else if(this.previousCommand) {
+          this.command.push(...this.previousCommand);
+          this.cursorPos += this.previousCommand.length;
         }
         break;
       case "return":
-        const rCommand = this.command.join('');
+        this.previousCommand = this.command.join('');
         this.command.splice(0, this.command.length);
         this.cursorPos = 0;
-        this.enterCommand(rCommand);
+        this.enterCommand(this.previousCommand);
         break;
       default:
         this.command.splice(this.cursorPos, 0, key);

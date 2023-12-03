@@ -36,7 +36,7 @@ chowloader.splash.render();
 chowloader.logger = require("$components/logger");
 
 chowloader.on("error", (e) => {
-  chowloader.logger.error(`${e.name}: ${e.message}${e.stack ? "\n" + e.stack.trim() : ""}`);
+  chowloader.logger.error(`${e.name}: ${e.message}${e.stack ? "\n" + e.stack.trimEnd() : ""}`);
 });
 
 let printLength = 0;
