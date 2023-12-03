@@ -48,7 +48,7 @@ return class ChowLoaderRenderer {
 
   renderText(text, x, y, fontSize, font, color, strokeWidth, strokeColor){
     const width = chowjs.measureTextWidth(text, `${fontSize}px ${font}`);
-    chowjs.drawCanvasText(this.canvas, text, width/2 + x, fontSize/2 + y, width, "center", `${fontSize}px ${font}`, color, strokeWidth, strokeColor);
+    chowjs.drawCanvasText(this.canvas, text, x, fontSize/2 + y, width, "left", `${fontSize}px ${font}`, color, strokeWidth, strokeColor);
   }
 
   renderTextCenter(text, y, fontSize, font, color, strokeWidth, strokeColor){

@@ -2,7 +2,7 @@ const Event = require("$lib/event");
 const ChowLoaderSplash = require("$components/splash");
 
 const natives = globalThis.chowloader;
-  
+
 class ChowLoader extends Event {
   natives = natives;
   renderer = natives.renderer;
@@ -10,7 +10,7 @@ class ChowLoader extends Event {
   thread = natives.thread;
   assets = natives.assets;
   splash = new ChowLoaderSplash();
-  logs = [];
+  freezeGame = true;
 
   constructor(){
     super();
@@ -33,13 +33,24 @@ chowloader.assets.isAudioLoaded = function(path){
 chowloader.splash.setMessage("Initialization...");
 chowloader.splash.render();
 
+chowloader.logger = require("$components/logger");
+
+chowloader.on("error", (e) => {
+  chowloader.logger.error(`${e.name}: ${e.message}${e.stack ? "\n" + e.stack.trim() : ""}`);
+});
+
+let printLength = 0;
+
 const _print = globalThis.print;
 globalThis.print = function print(...args){
-  chowloader.logs.push(args);
+  const output = String(args);
+  chowloader.logger.debug(output);
+
+  printLength++;
 
   if(!chowloader.splash.isOMORILaunched()){
-    chowloader.splash.setProgress(5 + Math.min(25, (chowloader.logs.length / 179) * 25));
-    chowloader.splash.setSubMessage(String(args));
+    chowloader.splash.setProgress(5 + Math.min(25, (printLength / 179) * 25));
+    chowloader.splash.setSubMessage(output);
     chowloader.splash.render();
   }
 
@@ -50,9 +61,17 @@ chowloader.on("omori_loaded", () => {
   function hookFunc(func, event){
     const _func = globalThis[func];
     globalThis[func] = function(...args){
-      const ret = _func(...args);
-      chowloader.emit(event);
-      return ret;
+      function emit(){
+        chowloader.emit(event);
+        if(event == "render")
+          chowloader.emit("render_console");
+      }
+      if(!chowloader.freezeGame){
+        const ret = _func(...args);
+        emit();
+        return ret;
+      }
+      emit();
     }
   }
 
