@@ -497,7 +497,7 @@ class Console extends ChowLoaderRenderer {
         this.renderText(str, 48 + command.length * 9, 11 + height, 15, "./chowloader/assets/JetBrainsMono.ttf", "#b5b5b5", 4, "rgba(0,0,0,0.20)");
       }
     }
-    if(~~(chowjs.time() * 2) % 2){
+    if(vkbd.show && ~~(chowjs.time() * 2) % 2){
       this.renderRect(49 + (this._cursorPos - this.commandPos) * 9, height + 5, 4, 17, "#000000");
       this.renderRect(50 + (this._cursorPos - this.commandPos) * 9, height + 6, 2, 15, "#ffffff");
     }
