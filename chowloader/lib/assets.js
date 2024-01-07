@@ -1,13 +1,13 @@
 const nativesAssets = chowloader.natives.assets;
 
 function internalLoadImage(path){
-  if(!nativesAssets.isImageLoaded(path) && !nativesAssets.loadImage(path)){
+  if(!nativesAssets.isImagePreloaded(path) && !nativesAssets.loadImage(path)){
     throw new MediaError("An error occured while loading the image " + path);
   }
 }
 
 function internalLoadAudio(path){
-  if(!nativesAssets.isAudioLoaded(path) && !nativesAssets.isAudioPreloaded(path) && !nativesAssets.loadAudio(path)){
+  if(!nativesAssets.isAudioPreloaded(path) && !nativesAssets.loadAudio(path)){
     throw new MediaError("An error occured while loading the image " + path);
   }
 }
