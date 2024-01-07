@@ -1,6 +1,3 @@
-# ChowLoader
-A ChowJS Mod Loader for OMORI
+# ChowLoader Javascript
 
-## Disclaimer
-
-The loader is still in an early stage and can't load any mods right now!
+The javascript section of the modloader
