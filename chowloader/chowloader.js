@@ -5,6 +5,7 @@ class ChowLoader extends Event {
   renderer = chowloader.renderer;
   aot = chowloader.aot;
   thread = chowloader.thread;
+  nextTick = chowloader.nextTick;
   freezeGame = false;
 }
 
@@ -25,7 +26,11 @@ let printLength = 0;
 
 const _print = globalThis.print;
 globalThis.print = function print(...args){
-  const output = String(args);
+  const output = String(args.map(a => {
+    if(typeof a === "undefined") a = "undefined";
+    if(typeof a === "null") a = "null";
+    return a;
+  }));
   chowloader.logger.debug(output);
 
   printLength++;

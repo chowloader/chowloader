@@ -4,8 +4,7 @@ const { loadImageSync } = require("$lib/assets");
 let isOMORILaunched = false;
 let firstDraw = true;
 
-loadImageSync("./chowloader/assets/logo.png");
-const logo = chowjs.getImage("./chowloader/assets/logo.png");
+const logo = loadImageSync("./chowloader/assets/logo.png");
 
 chowjs.setResolutionScaler(1);
 chowjs.setBorder("border_whitespace",255);
