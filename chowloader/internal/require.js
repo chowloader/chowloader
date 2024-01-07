@@ -3,7 +3,7 @@ const __filename = this.filename.replace(/\\/g, "/");
 const __dirname = [...__filename.split("/").slice(0, -1), ""].join("/");
 
 function newRequire(filename){
-  return Function(chowjs.loadFile(`chowloader/components/require.js`)).call({ cache, filename });
+  return Function(chowjs.loadFile(`chowloader/internal/require.js`)).call({ cache, filename });
 }
 
 function resolve(path){
@@ -12,7 +12,7 @@ function resolve(path){
 
   if(path === "chowloader") path = "./chowloader/chowloader.js";
   if(path.startsWith("$lib")) path = path.replace("$lib", "./chowloader/lib");
-  if(path.startsWith("$components")) path = path.replace("$components", "./chowloader/components");
+  if(path.startsWith("internal/")) path = "./chowloader/"+path;
 
   if(!path.startsWith("./")) path = __dirname + path;
 

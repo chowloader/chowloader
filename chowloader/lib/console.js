@@ -4,7 +4,7 @@ const whiteBg = new ChowLoaderRenderer(640, 480, "#ffffff");
 
 let consoleOpacity = 1;
 
-class CommandBuilder {
+class ConsoleCommandBuilder {
   constructor(command, callback){
     this.name = command;
     this.callback = callback;
@@ -12,13 +12,13 @@ class CommandBuilder {
     this.persist = {};
   }
 
-  setCommandName(command){
+  setName(command){
     this.name = command;
     return this;
   }
 
   /* type: string, number, boolean, eval */
-  setArg(name, type, optional = false){
+  addArg(name, type, optional = false){
     if(this.args.find(a => a.name === name)) return this;
     if(this.args[this.args.length-1] && this.args[this.args.length-1].optional) optional = true;
     this.args.push({name, type, optional});
@@ -341,6 +341,7 @@ class Console extends ChowLoaderRenderer {
   heightNoVKBD = 432;
   heightWithVKBD = 237;
   heightInput = 20;
+  vkbd = vkbd;
 
   constructor(){
     super(640, 480, "rgba(0,0,0,0)");
@@ -464,7 +465,7 @@ class Console extends ChowLoaderRenderer {
   commands = [];
 
   addCommand(command){
-    if(command instanceof CommandBuilder && this.commands.indexOf(command) === -1) this.commands.push(command);
+    if(command instanceof ConsoleCommandBuilder && this.commands.indexOf(command) === -1) this.commands.push(command);
   }
 
   previousCommand = "";
@@ -557,7 +558,7 @@ class Console extends ChowLoaderRenderer {
             this.command.push(...str, " ");
             this.cursorPos += str.length + 1;
           }
-        } else if(this.previousCommand) {
+        } else if(!tCommand && this.previousCommand) {
           this.command.push(...this.previousCommand);
           this.cursorPos += this.previousCommand.length;
         }
@@ -665,29 +666,29 @@ chowloader.on("render_console", () => {
 
 // Generic commands
 
-const opacityCommand = new CommandBuilder("console_opacity", (args) => {
+const opacityCommand = new ConsoleCommandBuilder("console_opacity", (args) => {
   if(isNaN(args.opacity)) return;
   if(args.opacity > 1) consoleOpacity = 1;
   else if(args.opacity < 0) consoleOpacity = 0;
   else consoleOpacity = args.opacity;
-}).setArg("opacity", "number");
+}).addArg("opacity", "number");
 
 console.addCommand(opacityCommand);
 
 let debug = false;
 
-const setDebugCommand = new CommandBuilder("set_debug", (args) => {
+const setDebugCommand = new ConsoleCommandBuilder("set_debug", (args) => {
   chowjs.setDebug(debug = args.debug);
-}).setArg("debug", "boolean");
+}).addArg("debug", "boolean");
 
-const toggleDebugCommand = new CommandBuilder("toggle_debug", () => {
+const toggleDebugCommand = new ConsoleCommandBuilder("toggle_debug", () => {
   chowjs.setDebug(debug = !debug);
 });
 
 console.addCommand(setDebugCommand);
 console.addCommand(toggleDebugCommand);
 
-const evalCommand = new CommandBuilder("eval", (cArgs, persist, args, originalCommand) => {
+const evalCommand = new ConsoleCommandBuilder("eval", (cArgs, persist, args, originalCommand) => {
   Function(processAntiSlashes(originalCommand.split(" ").slice(1).join(" ")))();
 });
 
@@ -705,7 +706,12 @@ function processAntiSlashes(str){
   })
 }
 
+function addConsoleCommand(command){
+  return command.addCommand(command);
+}
+
 return {
   console,
-  CommandBuilder
+  addConsoleCommand,
+  ConsoleCommandBuilder
 };

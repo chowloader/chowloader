@@ -1,40 +1,21 @@
 const Event = require("$lib/event");
-const ChowLoaderSplash = require("$components/splash");
-const ChowLoaderAssets = require("$components/assets_loader");
-
-const natives = globalThis.chowloader;
 
 class ChowLoader extends Event {
-  natives = natives;
-  renderer = natives.renderer;
-  aot = natives.aot;
-  thread = natives.thread;
-  assets = new ChowLoaderAssets();
-  splash = new ChowLoaderSplash();
+  natives = chowloader;
+  renderer = chowloader.renderer;
+  aot = chowloader.aot;
+  thread = chowloader.thread;
   freezeGame = false;
-
-  constructor(){
-    super();
-    this.aot.jsaots = [];
-    this.aot.jsvals = [];
-    this.on("update", natives.executeJobs);
-  }
 }
 
 globalThis.chowloader = new ChowLoader();
 
-chowloader.assets.isImageLoaded = function(path){
-  return chowjs.imageReady(path);
-}
+const splash = require("internal/splash");
+splash.setMessage("Initialization...");
+splash.setProgress(0);
+splash.render();
 
-chowloader.assets.isAudioLoaded = function(path){
-  return chowjs.createAudio(path) !== null;
-}
-
-chowloader.splash.setMessage("Initialization...");
-chowloader.splash.render();
-
-chowloader.logger = require("$components/logger");
+chowloader.logger = require("$lib/logger");
 
 chowloader.on("error", (e) => {
   chowloader.logger.error(`${e.name}: ${e.message}${e.stack ? "\n" + e.stack.trimEnd() : ""}`);
@@ -49,10 +30,10 @@ globalThis.print = function print(...args){
 
   printLength++;
 
-  if(!chowloader.splash.isOMORILaunched()){
-    chowloader.splash.setProgress(5 + Math.min(25, (printLength / 179) * 25));
-    chowloader.splash.setSubMessage(output);
-    chowloader.splash.render();
+  if(!splash.isOMORILaunched()){
+    splash.setProgress(5 + Math.min(25, (printLength / 179) * 25));
+    splash.setSubMessage(output);
+    splash.render();
   }
 
   return _print.call(this, ...args);
@@ -85,9 +66,12 @@ chowloader.on("omori_loaded", () => {
   hookFunc("onTouchMove", "touchmove") // onTouchMove(int x, int y) : on screen touch/click move
   hookFunc("onTouchEnd", "touchend") // onTouchEnd(int x, int y) : on screen touch/click up
 
-  chowloader.splash.setMessage("AOT Initialization...");
-  chowloader.splash.setSubMessage("");
+  splash.setMessage("AOT Initialization...");
+  splash.setSubMessage("");
 });
+
+chowloader.aot.jsaots = [];
+chowloader.aot.jsvals = [];
 
 chowloader.on("aot_object", obj => {
   if(obj.type === "jsaot"){
@@ -98,18 +82,18 @@ chowloader.on("aot_object", obj => {
 
   const len = chowloader.aot.jsaots.length + chowloader.aot.jsvals.length;
 
-  if(!chowloader.splash.isOMORILaunched() && len % 200 === 0){
-    chowloader.splash.setProgress(30 + Math.min(40, 40 * len / 5584));
-    chowloader.splash.setSubMessage(obj.path);
-    chowloader.splash.render();
+  if(!splash.isOMORILaunched() && len % 200 === 0){
+    splash.setProgress(30 + Math.min(40, 40 * len / 5584));
+    splash.setSubMessage(obj.path);
+    splash.render();
   }
 });
 
 chowloader.on("aot_loaded", () => {
-  chowloader.splash.setMessage("Loading JS native offsets...");
-  chowloader.splash.setSubMessage("");
-  chowloader.splash.setProgress(70);
-  chowloader.splash.render();
+  splash.setMessage("Loading JS native offsets...");
+  splash.setSubMessage("");
+  splash.setProgress(70);
+  splash.render();
 
   const len = chowloader.aot.jsvals.length;
 
@@ -121,24 +105,26 @@ chowloader.on("aot_loaded", () => {
     }
 
     if(i % 100 === 0){
-      chowloader.splash.setProgress(70 + Math.min(30, 30 * i / len));
-      chowloader.splash.setSubMessage(chowloader.aot.jsvals[i].path);
-      chowloader.splash.render();
+      splash.setProgress(70 + Math.min(30, 30 * i / len));
+      splash.setSubMessage(chowloader.aot.jsvals[i].path);
+      splash.render();
     }
   }
 
   chowloader.aot.jsvals = chowloader.aot.jsvals.filter(c => c.corrupted);
 
-  chowloader.splash.setMessage("Loading OMORI...")
-  chowloader.splash.setSubMessage("");
-  chowloader.splash.setProgress(100);
-  chowloader.splash.render();
+  splash.setMessage("Loading OMORI...")
+  splash.setSubMessage("");
+  splash.setProgress(100);
+  splash.render();
 
-  chowloader.splash.setOMORILaunched();
+  splash.setOMORILaunched();
 });
 
-chowloader.splash.setMessage("OMORI Initialization...");
-chowloader.splash.setProgress(5);
-chowloader.splash.render();
+chowloader.on("update", chowloader.natives.executeJobs);
+
+splash.setMessage("OMORI Initialization...");
+splash.setProgress(5);
+splash.render();
 
 return chowloader;
