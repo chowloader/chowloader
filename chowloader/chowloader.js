@@ -1,5 +1,6 @@
 const Event = require("$lib/event");
 const ChowLoaderSplash = require("$components/splash");
+const ChowLoaderAssets = require("$components/assets_loader");
 
 const natives = globalThis.chowloader;
 
@@ -8,7 +9,7 @@ class ChowLoader extends Event {
   renderer = natives.renderer;
   aot = natives.aot;
   thread = natives.thread;
-  assets = natives.assets;
+  assets = new ChowLoaderAssets();
   splash = new ChowLoaderSplash();
   freezeGame = false;
 
