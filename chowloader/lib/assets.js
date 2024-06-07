@@ -8,7 +8,7 @@ function internalLoadImage(path){
 
 function internalLoadAudio(path){
   if(!nativesAssets.isAudioPreloaded(path) && !nativesAssets.loadAudio(path)){
-    throw new MediaError("An error occured while loading the image " + path);
+    throw new MediaError("An error occured while loading the audio " + path);
   }
 }
 
