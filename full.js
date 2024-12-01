@@ -1,9 +1,9 @@
-const req_script = chowjs.loadFile(`chowloader/internal/require.js`);
+const req_func = Function(chowjs.loadFile(`chowloader/internal/require.js`));
 
-Function(req_script).call({
+req_func.call({
   cache: {},
   filename: "./full.js",
-  req_script
+  req_func
 })("chowloader");
 
 throw new Error();

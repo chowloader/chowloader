@@ -1,10 +1,10 @@
 const cache = this.cache;
 const __filename = this.filename.replace(/\\/g, "/");
 const __dirname = [...__filename.split("/").slice(0, -1), ""].join("/");
-const req_script = this.req_script;
+const req_func = this.req_func;
 
 function newRequire(filename){
-  return Function(req_script).call({ cache, filename, req_script });
+  return req_func.call({ cache, filename, req_func });
 }
 
 function resolve(path){
